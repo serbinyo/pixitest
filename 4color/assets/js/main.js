@@ -81,7 +81,16 @@ title.position.set(12, 12);
 //Добавляем цвет краски и присваиваем ему значение по усолчанию
 let pouringColor = 0xFF0000;
 
-//Добавляем фигуры для выбора цвета
+//Добавляем панель для кнопок
+const bottomPanel = new PIXI.Graphics();
+// Rectangle
+bottomPanel.beginFill(0x808080);
+bottomPanel.drawRect(0, app.stage.hitArea.height - 50, app.stage.hitArea.width, 50);
+bottomPanel.endFill();
+bottomPanel.zIndex = 50;
+app.stage.addChild(bottomPanel);
+
+//Добавляем кнопки для выбора цвета
 addColorPicker(0xFF0000, {x: 100, y: 560});
 addColorPicker(0xFF4500, {x: 150, y: 560});
 addColorPicker(0xFFFF00, {x: 200, y: 560});
@@ -110,7 +119,7 @@ function addColorPicker(color, coords) {
         pouringColor = color;
     });
 
-    app.stage.addChild(square);
+    bottomPanel.addChild(square);
 }
 
 // Make brush semi-transparent and listen to drag-move events when one is
@@ -144,10 +153,12 @@ function onDragMove(e) {
 }
 
 function onClick(e) {
-    if (selectedTarget) {
-        selectedTarget.position.copyFrom(e.global);
+    //Если не кликнули по нижней панеле и выбран предмет перемещаем его
+    if (e.global.y < app.stage.hitArea.height - bottomPanel.height) {
+        if (selectedTarget) {
+            selectedTarget.position.copyFrom(e.global);
+        }
     }
-    //console.log(e.global)
 }
 
 function paint(e) {
